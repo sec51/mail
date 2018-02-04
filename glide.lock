@@ -1,0 +1,14 @@
+hash: 58fa636975594d336c99a23091b185f6fa0f3da6030956fd7d4b0f31b797c3f0
+updated: 2018-02-04T19:25:32.152723+01:00
+imports:
+- name: github.com/astaxie/beego
+  version: fbb98fbe1fe5f6a4209772b44e2547714992340c
+  subpackages:
+  - config
+- name: github.com/sec51/goconf
+  version: c1d0345677489dc093485281d2ed71c354f2027b
+- name: gopkg.in/alexcesaro/quotedprintable.v3
+  version: 2caba252f4dc53eaf6b553000885530023f54623
+- name: gopkg.in/gomail.v2
+  version: 81ebce5c23dfd25c6c67194b37d3dd3f338c98b1
+testImports: []

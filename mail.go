@@ -30,6 +30,9 @@ type EmailConfig struct {
 
 	// whether to use username and password for authentication
 	UseAUTH bool
+
+	// Skip verification of TLS certificate
+	InsecureSkipVerify bool
 }
 
 func (c *EmailConfig) Send(body, to, subject string) error {
@@ -87,7 +90,7 @@ func (c *EmailConfig) Send(body, to, subject string) error {
 
 		if d.SSL {
 			tlsconfig := &tls.Config{
-				InsecureSkipVerify: false,
+				InsecureSkipVerify: c.InsecureSkipVerify,
 				ServerName:         smtpServer,
 			}
 			d.TLSConfig = tlsconfig

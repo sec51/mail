@@ -36,7 +36,7 @@ type EmailConfig struct {
 }
 
 func (c *EmailConfig) Send(body, to, subject string) error {
-
+	var d *gomail.Dialer
 	m := gomail.NewMessage()
 	m.SetHeader("To", to)
 	m.SetHeader("Subject", subject)
@@ -49,7 +49,6 @@ func (c *EmailConfig) Send(body, to, subject string) error {
 			return errors.New("From email address not configured - set: smtp::from = FROM in the config file")
 		}
 	}
-
 	m.SetHeader("From", from)
 
 	smtpServer := c.Server
@@ -63,17 +62,11 @@ func (c *EmailConfig) Send(body, to, subject string) error {
 	smtpUser := c.Username
 	if smtpUser == "" {
 		smtpUser = goconf.AppConf.DefaultString("smtp::username", c.Username)
-		if smtpUser == "" {
-			//return errors.New("SMTP username not configured, set: smtp::username = NAME in the config file")
-		}
 	}
 
 	smtpPass := c.Password
 	if smtpPass == "" {
 		smtpPass = goconf.AppConf.DefaultString("smtp::password", c.Password)
-		if smtpPass == "" {
-			//return errors.New("SMTP password not configured, set: smtp::password = PASSWORD in the config file")
-		}
 	}
 
 	smtpPort := c.Port
@@ -85,22 +78,22 @@ func (c *EmailConfig) Send(body, to, subject string) error {
 	}
 
 	if c.UseAUTH {
-		d := gomail.NewPlainDialer(smtpServer, smtpPort, smtpUser, smtpPass)
-		d.SSL = c.UseTLS
-
-		if d.SSL {
-			tlsconfig := &tls.Config{
-				InsecureSkipVerify: c.InsecureSkipVerify,
-				ServerName:         smtpServer,
-			}
-			d.TLSConfig = tlsconfig
+		if smtpUser == "" {
+			return errors.New("SMTP username not configured, set: smtp::username = NAME in the config file")
 		}
-
-		// Send the email to Bob, Cora and Dan
-		return d.DialAndSend(m)
+		if smtpPass == "" {
+			return errors.New("SMTP password not configured, set: smtp::password = PASSWORD in the config file")
+		}
+		d = gomail.NewDialer(smtpServer, smtpPort, smtpUser, smtpPass)
+	} else {
+		d = &gomail.Dialer{Host: smtpServer, Port: smtpPort}
 	}
 
-	d := gomail.Dialer{Host: smtpServer, Port: smtpPort}
-	return d.DialAndSend(m)
+	d.SSL = c.UseTLS
+	d.TLSConfig = &tls.Config{
+		InsecureSkipVerify: c.InsecureSkipVerify,
+		ServerName:         smtpServer,
+	}
 
+	return d.DialAndSend(m)
 }

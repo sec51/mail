@@ -1,0 +1,6 @@
+package: github.com/sec51/goconf
+import:
+- package: github.com/astaxie/beego
+  version: ~1.9.2
+  subpackages:
+  - config

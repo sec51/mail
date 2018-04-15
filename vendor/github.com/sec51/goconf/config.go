@@ -32,6 +32,6 @@ func init() {
 	}
 
 	if err != nil {
-		log.Fatal("Could not find any config file.")
+		log.Printf("Could not find any config file in the following paths: %+v\n", confFileLocations)
 	}
 }

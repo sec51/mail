@@ -1,5 +1,6 @@
 package: github.com/sec51/mail
 import:
 - package: github.com/sec51/goconf
+  version: ~0.0.1
 - package: gopkg.in/gomail.v2
   version: ~2.0.0
